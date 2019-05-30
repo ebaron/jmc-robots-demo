@@ -1,5 +1,2 @@
 .gradle
 build
-gradlew
-gradlew.bat
-**/*.jar
