@@ -18,6 +18,7 @@ include 'services:webservice'
 // Can be removed once Quarkus is published on Gradle Plugin Portal
 pluginManagement {
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }

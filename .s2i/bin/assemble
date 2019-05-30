@@ -16,7 +16,8 @@ fi
 cd "${S2I_SOURCE_DIR}/${SUBPROJECT_DIR}"
 
 if [ -f "src/main/resources/application.properties" ]; then
-    sed -i "s|RobotMakerService/mp-rest/url=.*|RobotMakerService/mp-rest/url=${ROBOTMAKER_URL}|"
+    sed -i "s|RobotMakerService/mp-rest/url=.*|RobotMakerService/mp-rest/url=${ROBOTMAKER_URL}|" \
+        "src/main/resources/application.properties"
 fi
 
 echo "Running ./gradlew --no-daemon build"

@@ -13,5 +13,7 @@ if [ -z "${RMI_SERVER_HOSTNAME}" ]; then
 fi
 export JAVA_OPTIONS
 
-echo "Starting application with /opt/run-java/run-java.sh"
-exec /opt/run-java/run-java.sh /deployments/*-runner.jar
+export JAVA_APP_JAR=$(readlink -f /deployments/*-runner.jar)
+
+# s2i run script from base image should be on the PATH
+exec run

@@ -1,7 +1,19 @@
+// this block is necessary to make enforcedPlatform work for Quarkus plugin available
+// only locally (snapshot) that is also importing the Quarkus BOM
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusVersion}"
+    }
+}
+
 plugins {
     id 'java'
-    id 'io.quarkus' version '0.15.0'
 }
+
+apply plugin: 'io.quarkus'
 
 repositories {
     mavenLocal()
@@ -14,8 +26,8 @@ repositories {
 
 dependencies {
     // Quarkus can only find our dependencies in jar form. Compiling RobotCommons normally results in the class directory on the classpath, not the jar
-    compile 'com.example.big.troublesome.corp:RobotCommons:0.0.1@jar'
-    implementation enforcedPlatform('io.quarkus:quarkus-bom:0.15.0')
+    implementation 'com.example.big.troublesome.corp:RobotCommons:0.0.1@jar'
+    implementation enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}")
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-smallrye-rest-client'
 }
