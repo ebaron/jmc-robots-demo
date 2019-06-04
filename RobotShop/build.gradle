@@ -19,7 +19,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     flatDir {
-        def libDir = new File(project(':RobotCommons').buildDir, project('RobotCommons').libsDirName)
+        def libDir = new File(project(':RobotCommons').buildDir, project(':RobotCommons').libsDirName)
         dirs libDir
     }
 }
@@ -30,6 +30,12 @@ dependencies {
     implementation enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}")
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-smallrye-rest-client'
+}
+
+processResources {
+    filesMatching("**/application.properties") {
+        expand(project.properties)
+    }
 }
 
 tasks.compileJava.dependsOn(':RobotCommons:jar')

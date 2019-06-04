@@ -31,6 +31,7 @@ public class ControlResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/factoryId")
     public String getFactoryId() {
+        LOGGER.info("BLAH");
         Message reply = new Message();
         reply.protocol = Protocol.FACTORY_ID;
         try {
@@ -61,8 +62,8 @@ public class ControlResource {
         reply.protocol = Protocol.PRODUCTION_THRESHOLD_UPDATE;
         try {
             Message request = Message.create(message);
-            if (Protocol.PRODUCTION_THRESHOLD_UPDATE.equals(request.protocol)) {
-                return Response.ok().entity(Message.EMPTY.toString()).build();
+            if (!Protocol.PRODUCTION_THRESHOLD_UPDATE.equals(request.protocol)) {
+                return Response.status(Status.BAD_REQUEST).entity(reply.toString()).build();
             }
             long parsed = Long.parseLong(request.payload);
             LOGGER.info("setting delay to new value: " + parsed);

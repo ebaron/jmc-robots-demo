@@ -11,7 +11,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/storage")
 @RegisterRestClient
-public interface RobotMakerService {
+public interface RobotMakerStorageService {
     
     @POST
     @Path("/buy")

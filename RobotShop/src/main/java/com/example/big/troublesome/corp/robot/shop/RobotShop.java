@@ -36,7 +36,7 @@ public class RobotShop {
 
     @Inject
     @RestClient
-    RobotMakerService service;
+    RobotMakerStorageService service;
 
     public RobotShop() {
         random = new Random(0);
@@ -94,6 +94,7 @@ public class RobotShop {
                             LOGGER.error("bad response from server: HTTP " + type.getStatusCode()
                             + " - " + type.getReasonPhrase());
                         }
+                        LOGGER.info("acknowledge: " + message);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
