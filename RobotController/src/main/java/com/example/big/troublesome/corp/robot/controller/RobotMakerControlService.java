@@ -13,7 +13,11 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @Path("/production")
 @RegisterRestClient
 public interface RobotMakerControlService {
-    
+
+    @GET
+    @Path("/")
+    Response isAvailable();
+
     @GET
     @Path("/factoryId")
     @Produces(MediaType.TEXT_PLAIN)

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
@@ -47,6 +48,9 @@ public class RobotShop {
             public void run() {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
+                        // Wait for service to become available
+                        waitForService();
+
                         Thread.sleep(500);
                         if (random.nextBoolean()) {
                             orders.incrementAndGet();
@@ -125,6 +129,24 @@ public class RobotShop {
             t.join();
         } catch (InterruptedException e) {
             LOGGER.warn("interrupted while waiting for " + t.getName() + " to stop");
+        }
+    }
+
+    private void waitForService() throws InterruptedException {
+        boolean started = false;
+        while (!started) {
+            try {
+                started = (service.isAvailable().getStatus() == Status.OK.getStatusCode());
+            } catch (WebApplicationException e) {
+                // Allow 404 Not Found while waiting for server
+                if (Status.NOT_FOUND.getStatusCode() != e.getResponse().getStatus()) {
+                    throw new WebApplicationException(e);
+                }
+            }
+            if (!started) {
+                LOGGER.info("Waiting for RobotMaker service to become available");
+                Thread.sleep(500);
+            }
         }
     }
 

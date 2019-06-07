@@ -28,6 +28,12 @@ public class ControlResource {
     RobotService service;
     
     @GET
+    @Path("/")
+    public Response isAvailable() {
+        return Response.ok().build();
+    }
+
+    @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/factoryId")
     public String getFactoryId() {

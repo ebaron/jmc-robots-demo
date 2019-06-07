@@ -2,6 +2,7 @@ package com.example.big.troublesome.corp.robot.maker2k;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -22,6 +23,12 @@ public class StorageResource {
     
     @Inject
     RobotService service;
+
+    @GET
+    @Path("/")
+    public Response isAvailable() {
+        return Response.ok().build();
+    }
 
     @POST
     @Consumes(MediaType.TEXT_PLAIN)

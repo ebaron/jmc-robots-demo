@@ -6,6 +6,7 @@ import java.io.InputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
@@ -42,8 +43,14 @@ public class RobotController {
         jfrChecker = new Thread(new Runnable() {
             @Override
             public void run() {
-                
                 try {
+                    // Wait for service to become available
+                    waitForService();
+
+                    // Get remote JMX URL and connect
+                    String response = service.getFactoryId();
+                    String factoryId = safeGetPayload(response, Protocol.FACTORY_ID);
+                    jfr.setHost(factoryId);
                     jfr.connect();
                     
                     while (!Thread.currentThread().isInterrupted()) {
@@ -59,6 +66,8 @@ public class RobotController {
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                } catch (IOException e) {
+                    LOGGER.error("Failed to communicate with factory", e);
                 }
             }
         });
@@ -68,16 +77,7 @@ public class RobotController {
     
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("Starting controlling robots!");
-        
-        try {
-            String response = service.getFactoryId();
-            String factoryId = safeGetPayload(response, Protocol.FACTORY_ID);
-            jfr.setHost(factoryId);
-            
-            jfrChecker.start();
-        } catch (IOException e) {
-            LOGGER.error("Failed to communicate with factory", e);
-        }
+        jfrChecker.start();
     }
 
     private String safeGetPayload(String response, Protocol expectedProtocol) throws IOException {
@@ -87,6 +87,7 @@ public class RobotController {
         }
         return message.payload;
     }
+
     void onStop(@Observes ShutdownEvent ev) {
         LOGGER.info("Stopping controlling robots!");
         jfrChecker.interrupt();
@@ -128,6 +129,24 @@ public class RobotController {
                     LOGGER.error("bad response from server: HTTP " + type.getStatusCode()
                     + " - " + type.getReasonPhrase());
                 }
+            }
+        }
+    }
+
+    private void waitForService() throws InterruptedException {
+        boolean started = false;
+        while (!started) {
+            try {
+                started = (service.isAvailable().getStatus() == Status.OK.getStatusCode());
+            } catch (WebApplicationException e) {
+                // Allow 404 Not Found while waiting for server
+                if (Status.NOT_FOUND.getStatusCode() != e.getResponse().getStatus()) {
+                    throw new WebApplicationException(e);
+                }
+            }
+            if (!started) {
+                LOGGER.info("Waiting for RobotMaker service to become available");
+                Thread.sleep(500);
             }
         }
     }
