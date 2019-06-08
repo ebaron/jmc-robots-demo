@@ -37,7 +37,6 @@ public class ControlResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/factoryId")
     public String getFactoryId() {
-        LOGGER.info("BLAH");
         Message reply = new Message();
         reply.protocol = Protocol.FACTORY_ID;
         try {

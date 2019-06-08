@@ -24,9 +24,7 @@ public class MissionControl {
             Attribute.attr("available", EVENT_NAME, NUMBER);
 
     private double getAverage(IAttribute<IQuantity> attribute, IItemCollection events) {
-        LOGGER.info("Events: " + events + ", attr: " + attribute); // XXX
         IQuantity aggregate = events.getAggregate(Aggregators.avg(attribute));
-        LOGGER.info("aggregate: " + aggregate); // XXX
         return aggregate.doubleValue();
     }
     

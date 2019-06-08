@@ -34,6 +34,8 @@ create_robot_app() {
         --build-env="ARTIFACT_COPY_ARGS=${copy_args}" \
         --env="JAVA_OPTIONS=${java_options}" \
         "${ROBOTS_BUILDER_IMAGE}~${ROBOTS_SOURCE_REPO}"
+    # Patch the service to expose port 9091, which isn't exposed by the builder image
+    oc patch "svc/${app_name}" -p '{"spec": {"ports": [{"name": "9091-tcp", "port": 9091, "protocol": "TCP", "targetPort": 9091}]}}'
 }
 
 if ! [ -x "$(command -v jq)" ]; then
