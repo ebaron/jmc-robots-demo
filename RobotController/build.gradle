@@ -30,7 +30,6 @@ dependencies {
     // Quarkus can only find our dependencies in jar form. Compiling RobotCommons normally results in the class directory on the classpath, not the jar
     implementation 'com.example.big.troublesome.corp:RobotCommons:0.0.1@jar'
     implementation enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}")
-    implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-smallrye-rest-client'
 
     def jmcVersion = "7.1+"

@@ -25,5 +25,5 @@ command -v s2i >/dev/null || { echo -e 'Please ensure s2i is installed and on yo
 See: https://github.com/openshift/source-to-image' >&2; exit 1; }
 
 s2i_build RobotMakerExpress2000 jmc-robots-demo/robotmaker
-#s2i_build RobotShop jmc-robots-demo/robotshop 'http://robotmaker:8080'
-#s2i_build RobotController jmc-robots-demo/robotcontroller 'http://robotmaker:8080'
+s2i_build RobotShop jmc-robots-demo/robotshop 'http://robotmaker:8080'
+s2i_build RobotController jmc-robots-demo/robotcontroller 'http://robotmaker:8080'
