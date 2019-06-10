@@ -42,7 +42,7 @@ public class ControlResource {
         try {
             reply.payload = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOGGER.warn("Couldn't determine IP address, using fallback", e);
             reply.payload = "robotmaker";
         }
         return reply.toString();
