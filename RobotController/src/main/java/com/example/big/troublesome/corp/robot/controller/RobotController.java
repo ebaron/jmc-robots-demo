@@ -6,6 +6,7 @@ import java.io.InputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -138,11 +139,8 @@ public class RobotController {
         while (!started) {
             try {
                 started = (service.isAvailable().getStatus() == Status.OK.getStatusCode());
-            } catch (WebApplicationException e) {
-                // Allow 404 Not Found while waiting for server
-                if (Status.NOT_FOUND.getStatusCode() != e.getResponse().getStatus()) {
-                    throw new WebApplicationException(e);
-                }
+            } catch (Exception e) {
+                LOGGER.info("Tried connecting to RobotMaker: " + e.getMessage());
             }
             if (!started) {
                 LOGGER.info("Waiting for RobotMaker service to become available");
