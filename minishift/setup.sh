@@ -101,3 +101,8 @@ oc set volume dc/container-jfr \
     --mount-path="/flightrecordings" \
     --containers="*"
 
+oc new-app "${IMAGE_REGISTRY}/jfr-datasource" --name=jfr-datasource
+# Impose some memory limits
+oc set resources dc/jfr-datasource --limits="memory=256Mi"
+
+oc expose svc jfr-datasource
